@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fixed an issue where missing export files could prevent NFS-Ganesha 
+    from starting. manila-share now rebuilds the export index on startup.

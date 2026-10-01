@@ -277,6 +277,9 @@ class GaneshaManager(object):
                 'value int); insert into ganesha values("exportid", '
                 '100);', run_as_root=False, check_exit_code=False)
             self.get_export_id(bump=False)
+            # Rebuild INDEX.conf from export files on disk, Ganesha won't start
+            # if this is missing, or references deleted files.
+            self._mkindex()
 
     def _getpath(self, name):
         """Get the path of config file for name."""
