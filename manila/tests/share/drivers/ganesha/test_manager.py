@@ -204,10 +204,14 @@ class GaneshaManagerTestCase(test.TestCase):
                     '_get_rados_object') as self.mock_get_rados_object:
                 return manager.GaneshaManager(*args, **kwargs)
         else:
-            with mock.patch.object(
-                    manager.GaneshaManager,
-                    'get_export_id',
-                    return_value=100) as self.mock_get_export_id:
+            with (
+                mock.patch.object(
+                    manager.GaneshaManager, 'get_export_id', return_value=100
+                ) as self.mock_get_export_id,
+                mock.patch.object(
+                    manager.GaneshaManager, '_mkindex'
+                ) as self.mock_mkindex,
+            ):
                 return manager.GaneshaManager(*args, **kwargs)
 
     def setUp(self):
@@ -254,6 +258,9 @@ class GaneshaManagerTestCase(test.TestCase):
                        '100);', run_as_root=False, check_exit_code=False)],
             self._execute.call_args_list)
         self.mock_get_export_id.assert_called_once_with(bump=False)
+
+    def test_init_rebuilds_index(self):
+        self.mock_mkindex.assert_called_once_with()
 
     def test_init_execute_error_log_message(self):
         fake_args = ('foo', 'bar')
